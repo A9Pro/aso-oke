@@ -4,7 +4,8 @@ import { useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 export default function CategoriesPage() {
-  const [hoveredCategory, setHoveredCategory] = useState(null);
+  // Explicitly type hoveredCategory as number | null
+  const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
 
   const categories = [
     {
@@ -66,20 +67,27 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-white pt-28 pb-20 px-6 relative overflow-hidden">
       {/* Subtle Pattern Background */}
-      <div className="absolute inset-0 opacity-[0.12]">
+      <div className="absolute inset-0 opacity-[0.12] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="fabric-pattern" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M0 0L80 80M80 0L0 80" stroke="#9333ea" strokeWidth="1.5" opacity="0.9"/>
-              <circle cx="40" cy="40" r="5" fill="#ec4899" opacity="0.9"/>
-              <circle cx="0" cy="0" r="3" fill="#9333ea" opacity="0.8"/>
-              <circle cx="80" cy="0" r="3" fill="#9333ea" opacity="0.8"/>
-              <circle cx="0" cy="80" r="3" fill="#9333ea" opacity="0.8"/>
-              <circle cx="80" cy="80" r="3" fill="#9333ea" opacity="0.8"/>
-              <rect x="38" y="18" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 40 20)"/>
-              <rect x="38" y="58" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 40 60)"/>
-              <rect x="18" y="38" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 20 40)"/>
-              <rect x="58" y="38" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 60 40)"/>
+            <pattern
+              id="fabric-pattern"
+              x="0"
+              y="0"
+              width="80"
+              height="80"
+              patternUnits="userSpaceOnUse"
+            >
+              <path d="M0 0L80 80M80 0L0 80" stroke="#9333ea" strokeWidth="1.5" opacity="0.9" />
+              <circle cx="40" cy="40" r="5" fill="#ec4899" opacity="0.9" />
+              <circle cx="0" cy="0" r="3" fill="#9333ea" opacity="0.8" />
+              <circle cx="80" cy="0" r="3" fill="#9333ea" opacity="0.8" />
+              <circle cx="0" cy="80" r="3" fill="#9333ea" opacity="0.8" />
+              <circle cx="80" cy="80" r="3" fill="#9333ea" opacity="0.8" />
+              <rect x="38" y="18" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 40 20)" />
+              <rect x="38" y="58" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 40 60)" />
+              <rect x="18" y="38" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 20 40)" />
+              <rect x="58" y="38" width="4" height="4" fill="#ec4899" opacity="0.7" transform="rotate(45 60 40)" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#fabric-pattern)" />
@@ -130,9 +138,7 @@ export default function CategoriesPage() {
               {/* Image Container */}
               <div className={`relative h-64 overflow-hidden bg-gradient-to-br ${category.bgGradient}`}>
                 <motion.div
-                  animate={{
-                    scale: hoveredCategory === category.id ? 1.1 : 1,
-                  }}
+                  animate={{ scale: hoveredCategory === category.id ? 1.1 : 1 }}
                   transition={{ duration: 0.6 }}
                   className="w-full h-full"
                 >
@@ -143,22 +149,17 @@ export default function CategoriesPage() {
                   />
                 </motion.div>
 
-                {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-                {/* Product Count Badge */}
                 <div className="absolute top-4 right-4">
                   <motion.div
-                    animate={{
-                      scale: hoveredCategory === category.id ? 1.1 : 1,
-                    }}
+                    animate={{ scale: hoveredCategory === category.id ? 1.1 : 1 }}
                     className="px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full text-sm font-semibold text-gray-900 shadow-md"
                   >
                     {category.count}
                   </motion.div>
                 </div>
 
-                {/* Hover Button */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{
@@ -183,30 +184,20 @@ export default function CategoriesPage() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-rose-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
                   {category.name}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {category.description}
-                </p>
+                <p className="text-gray-600 leading-relaxed">{category.description}</p>
 
-                {/* Decorative Line */}
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{
-                    width: hoveredCategory === category.id ? "100%" : "0%",
-                  }}
+                  animate={{ width: hoveredCategory === category.id ? "100%" : "0%" }}
                   transition={{ duration: 0.3 }}
                   className={`h-1 bg-gradient-to-r ${category.color} rounded-full mt-4`}
                 />
               </div>
 
-              {/* Glow Effect on Hover */}
               <motion.div
-                animate={{
-                  opacity: hoveredCategory === category.id ? 1 : 0,
-                }}
+                animate={{ opacity: hoveredCategory === category.id ? 1 : 0 }}
                 className="absolute inset-0 pointer-events-none"
-                style={{
-                  boxShadow: "0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(236, 72, 153, 0.2)",
-                }}
+                style={{ boxShadow: "0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(236, 72, 153, 0.2)" }}
               />
             </motion.div>
           ))}
@@ -221,33 +212,24 @@ export default function CategoriesPage() {
         className="max-w-7xl mx-auto mt-20 relative z-10"
       >
         <div className="bg-gradient-to-r from-purple-600 to-rose-600 rounded-3xl p-12 text-center text-white shadow-2xl relative overflow-hidden">
-          {/* Decorative Elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-          
+
           <div className="relative z-10">
             <motion.div
-              animate={{
-                rotate: [0, 360],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear",
-              }}
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               className="inline-block mb-6"
             >
               <Sparkles className="w-12 h-12" />
             </motion.div>
-            
-            <h2 className="text-4xl font-bold mb-4">
-              Can't Find What You're Looking For?
-            </h2>
+
+            <h2 className="text-4xl font-bold mb-4">Can't Find What You're Looking For?</h2>
             <p className="text-lg mb-8 text-white/90 max-w-2xl mx-auto">
               We offer custom designs tailored to your unique style and preferences. 
               Let us create something special just for you.
             </p>
-            
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -266,9 +248,7 @@ export default function CategoriesPage() {
         transition={{ delay: 1, duration: 0.6 }}
         className="text-center mt-16 relative z-10"
       >
-        <p className="text-gray-600 mb-4">
-          Need help choosing? Our experts are here to assist you.
-        </p>
+        <p className="text-gray-600 mb-4">Need help choosing? Our experts are here to assist you.</p>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

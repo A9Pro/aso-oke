@@ -1,10 +1,18 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare } from "lucide-react";
 
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
@@ -12,9 +20,9 @@ export default function ContactPage() {
     message: "",
   });
 
-  const [focusedField, setFocusedField] = useState(null);
+  const [focusedField, setFocusedField] = useState<keyof FormData | null>(null);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -23,7 +31,7 @@ export default function ContactPage() {
 
   const handleSubmit = () => {
     console.log("Form submitted:", formData);
-    // Add your form submission logic here
+    // Add form submission logic here (e.g., API call)
   };
 
   const contactInfo = [
@@ -130,10 +138,10 @@ export default function ContactPage() {
         </div>
       </motion.div>
 
-      {/* Main Content - Form and Map */}
+      {/* Form and Sidebar */}
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Contact Form */}
+          {/* Form */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -152,79 +160,25 @@ export default function ContactPage() {
               </div>
 
               <div className="space-y-6">
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Full Name
-                  </label>
-                  <motion.input
-                    whileFocus={{ scale: 1.01 }}
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField("name")}
-                    onBlur={() => setFocusedField(null)}
-                    placeholder="Enter your name"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  />
-                </div>
-
-                {/* Email and Phone */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
+                {["name", "email", "phone", "subject"].map((field) => (
+                  <div key={field}>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Email Address
+                      {field.charAt(0).toUpperCase() + field.slice(1)} {field === "phone" ? "Number" : ""}
                     </label>
                     <motion.input
                       whileFocus={{ scale: 1.01 }}
-                      type="email"
-                      name="email"
-                      value={formData.email}
+                      type={field === "email" ? "email" : "text"}
+                      name={field}
+                      value={formData[field as keyof FormData]}
                       onChange={handleChange}
-                      onFocus={() => setFocusedField("email")}
+                      onFocus={() => setFocusedField(field as keyof FormData)}
                       onBlur={() => setFocusedField(null)}
-                      placeholder="your@email.com"
+                      placeholder={`Enter your ${field}`}
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <motion.input
-                      whileFocus={{ scale: 1.01 }}
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      onFocus={() => setFocusedField("phone")}
-                      onBlur={() => setFocusedField(null)}
-                      placeholder="+234 123 456 7890"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                    />
-                  </div>
-                </div>
+                ))}
 
-                {/* Subject */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Subject
-                  </label>
-                  <motion.input
-                    whileFocus={{ scale: 1.01 }}
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField("subject")}
-                    onBlur={() => setFocusedField(null)}
-                    placeholder="How can we help you?"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  />
-                </div>
-
-                {/* Message */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Message
@@ -237,12 +191,11 @@ export default function ContactPage() {
                     onFocus={() => setFocusedField("message")}
                     onBlur={() => setFocusedField(null)}
                     placeholder="Tell us more about your inquiry..."
-                    rows="6"
+                    rows={6}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
                   />
                 </div>
 
-                {/* Submit Button */}
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -256,14 +209,14 @@ export default function ContactPage() {
             </div>
           </motion.div>
 
-          {/* Additional Info Sidebar */}
+          {/* Sidebar */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
             className="lg:col-span-2 space-y-6"
           >
-            {/* Map Placeholder */}
+            {/* Map */}
             <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
               <div className="h-64 bg-gradient-to-br from-purple-100 to-rose-100 relative">
                 <img
@@ -296,7 +249,7 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* FAQ Section */}
+            {/* FAQ */}
             <div className="bg-gradient-to-br from-purple-600 to-rose-600 rounded-3xl shadow-xl p-8 text-white">
               <h3 className="text-2xl font-bold mb-4">Quick Questions?</h3>
               <p className="mb-6 text-white/90">
@@ -314,7 +267,7 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* Social Proof / Trust Section */}
+      {/* Social Proof */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -322,32 +275,24 @@ export default function ContactPage() {
         className="max-w-7xl mx-auto mt-16 relative z-10"
       >
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-3xl p-12 text-center border border-gray-200">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            We're Here to Help
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">We're Here to Help</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
             Our customer service team is dedicated to providing you with the best shopping experience. 
             We typically respond within 24 hours.
           </p>
           <div className="flex flex-wrap justify-center gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-rose-600 bg-clip-text text-transparent mb-2">
-                24hrs
+            {[
+              { value: "24hrs", label: "Response Time" },
+              { value: "98%", label: "Customer Satisfaction" },
+              { value: "5000+", label: "Happy Customers" },
+            ].map((item, idx) => (
+              <div key={idx}>
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-rose-600 bg-clip-text text-transparent mb-2">
+                  {item.value}
+                </div>
+                <div className="text-sm text-gray-600">{item.label}</div>
               </div>
-              <div className="text-sm text-gray-600">Response Time</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-rose-600 bg-clip-text text-transparent mb-2">
-                98%
-              </div>
-              <div className="text-sm text-gray-600">Customer Satisfaction</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-rose-600 bg-clip-text text-transparent mb-2">
-                5000+
-              </div>
-              <div className="text-sm text-gray-600">Happy Customers</div>
-            </div>
+            ))}
           </div>
         </div>
       </motion.div>
